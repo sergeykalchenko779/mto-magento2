@@ -1,0 +1,12 @@
+<!-- ko if: isEnable() -->
+<div>
+    <input type="checkbox"
+                   class="admin__control-checkbox"
+                   simple-checked="checked"
+                   ko-disabled="disabled"
+                   ko-focused="focused"
+                   ko-value="value"
+                   attr="id: uid, name: inputName"/>
+    <label data-bind="text: getOptInText()"/>
+</div>
+<!-- /ko -->

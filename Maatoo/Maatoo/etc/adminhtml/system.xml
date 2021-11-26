@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 Globeweb. All rights reserved.
+ * See more information at http://www.hellomagento2.com
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="maatoo_tab" translate="label" sortOrder="10">
+            <label>Maatoo</label>
+        </tab>
+        <section id="maatoo" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+            <label>Maatoo Settings</label>
+            <tab>maatoo_tab</tab>
+            <resource>Maatoo_Maatoo::maatoo</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>General</label>
+                <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable this Solution</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="debug_enabled" translate="label" type="select" sortOrder="25" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Debug Mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                </field>
+                <field id="url" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Maatoo Url</label>
+                </field>
+                <field id="user" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>User</label>
+                </field>
+                <field id="password" translate="label" type="obscure" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Password</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                </field>
+                <field id="button_id" translate="label" type="button" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Test Connection</label>
+                    <button_label>Test Connection</button_label>
+                    <frontend_model>Maatoo\Maatoo\Block\Adminhtml\System\Config\Button</frontend_model>
+                    <comment><![CDATA[Before press button "Test connection" you need enter other settings and keep them.]]></comment>
+                </field>
+            </group>
+            <group id="order" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Order Synchronization Settings</label>
+                <field id="lifetime" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Order lifetime (days)</label>
+                    <comment><![CDATA[Synchronize orders not older than the specified time in days.]]></comment>
+                </field>
+            </group>
+            <group id="website" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                <label>Website settings</label>
+                <field id="website_active" translate="label" type="select" sortOrder="10" showInDefault="0" showInWebsite="1" showInStore="0">
+                    <label>Enable this Website</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="allowed_store" translate="label" type="select" sortOrder="20" showInDefault="0" showInWebsite="1" showInStore="0">
+                    <label>Allowe Store</label>
+                    <source_model>Maatoo\Maatoo\Model\Source\Store</source_model>
+                    <can_be_empty>0</can_be_empty>
+                </field>
+                <field id="opt_in" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Add marketing opt-in to checkout page</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="opt_in_text" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Add marketing opt-in text</label>
+                    <comment><![CDATA[Default text - 'Add marketing opt-in to order'.]]></comment>
+                    <depends>
+                        <field id="active">1</field>
+                        <field id="opt_in">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

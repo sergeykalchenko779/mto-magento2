@@ -1,0 +1,18 @@
+<?php
+/** @var \Maatoo\Maatoo\Block\Adminhtml\System\Config\Button $block */
+$controller = $block->getCustomUrl();
+//echo $block->getButtonHtml();
+?>
+<button class="scalable" type="button" id="<?= $block->getHtmlId() ?>" data-mage-init='{"maatooConnection":{
+    "url": "<?= $block->escapeUrl($block->getAjaxUrl()) ?>",
+    "elementId": "<?= $block->getHtmlId() ?>",
+    "successText": "<?= $block->escapeHtmlAttr(__('Successful! Test again?')) ?>",
+    "failedText": "<?= $block->escapeHtmlAttr(__('Connection failed! Test again?')) ?>",
+    "fieldMapping": "<?= /* @noEscape */ $block->getFieldMapping() ?>"},
+    "validation": {}}'>
+    <span id="<?= $block->getHtmlId() ?>_result"><?= $block->escapeHtml($block->getButtonLabel()) ?></span>
+</button>
+<style>
+    #maatoo_general button.success { background: green; color: #fff; }
+    #maatoo_general button.fail { background: red; color: #fff; }
+</style>

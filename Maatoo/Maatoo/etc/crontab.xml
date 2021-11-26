@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+	<group id="maatoo">
+        <job name="maatoo_cron_store" instance="Maatoo\Maatoo\Cron\Store" method="execute">
+            <schedule>*/5 * * * *</schedule>
+        </job>
+        <job name="maatoo_cron_category" instance="Maatoo\Maatoo\Cron\Category" method="execute">
+            <schedule>*/5 * * * *</schedule>
+        </job>
+        <job name="maatoo_cron_product" instance="Maatoo\Maatoo\Cron\Product" method="execute">
+            <schedule>*/5 * * * *</schedule>
+        </job>
+        <job name="maatoo_cron_order" instance="Maatoo\Maatoo\Cron\Order" method="execute">
+            <schedule>*/5 * * * *</schedule>
+        </job>
+        <job name="maatoo_cron_order_lines" instance="Maatoo\Maatoo\Cron\OrderLines" method="execute">
+            <schedule>*/10 * * * *</schedule>
+        </job>
+	</group>
+</config>

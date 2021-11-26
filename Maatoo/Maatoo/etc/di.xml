@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="maatoo_sync" xsi:type="object">Maatoo\Maatoo\Console\Command\MaatooSynchronization</item>
+                <item name="maatoo_sync_stores" xsi:type="object">Maatoo\Maatoo\Console\Command\SyncStores</item>
+                <item name="maatoo_sync_categories" xsi:type="object">Maatoo\Maatoo\Console\Command\SyncCategories</item>
+                <item name="maatoo_sync_products" xsi:type="object">Maatoo\Maatoo\Console\Command\SyncProducts</item>
+                <item name="maatoo_sync_orders" xsi:type="object">Maatoo\Maatoo\Console\Command\SyncOrders</item>
+                <item name="maatoo_sync_order_lines" xsi:type="object">Maatoo\Maatoo\Console\Command\SyncOrderLines</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Maatoo\Maatoo\Logger\Handler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="Maatoo\Maatoo\Logger\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">maatoo_res</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="maatoo_log_handler" xsi:type="object">Maatoo\Maatoo\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </type>
+    <preference for="Maatoo\Maatoo\Adapter\AdapterInterface" type="Maatoo\Maatoo\Adapter\Curl" />
+
+    <virtualType name="Maatoo\Maatoo\Observer\CustomerSaveObserver" type="Maatoo\Maatoo\Observer\EntitySaveObserver">
+        <arguments>
+            <argument name="entityType" xsi:type="const">Maatoo\Maatoo\Api\Data\SyncInterface::TYPE_CUSTOMER</argument>
+        </arguments>
+    </virtualType>
+    <!--
+    <virtualType name="Maatoo\Maatoo\Observer\OrderSaveObserver" type="Maatoo\Maatoo\Observer\EntitySaveObserver">
+        <arguments>
+            <argument name="entityType" xsi:type="const">Maatoo\Maatoo\Api\Data\SyncInterface::TYPE_ORDER</argument>
+        </arguments>
+    </virtualType>
+    -->
+    <virtualType name="Maatoo\Maatoo\Observer\QuoteSaveObserver" type="Maatoo\Maatoo\Observer\EntitySaveObserver">
+        <arguments>
+            <argument name="entityType" xsi:type="const">Maatoo\Maatoo\Api\Data\SyncInterface::TYPE_ORDER</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Maatoo\Maatoo\Observer\CategorySaveObserver" type="Maatoo\Maatoo\Observer\EntitySaveObserver">
+        <arguments>
+            <argument name="entityType" xsi:type="const">Maatoo\Maatoo\Api\Data\SyncInterface::TYPE_CATEGORY</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Maatoo\Maatoo\Observer\CustomerDeleteObserver" type="Maatoo\Maatoo\Observer\EntityDeleteObserver">
+        <arguments>
+            <argument name="entityType" xsi:type="const">Maatoo\Maatoo\Api\Data\SyncInterface::TYPE_CUSTOMER</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Maatoo\Maatoo\Observer\OrderDeleteObserver" type="Maatoo\Maatoo\Observer\EntityDeleteObserver">
+        <arguments>
+            <argument name="entityType" xsi:type="const">Maatoo\Maatoo\Api\Data\SyncInterface::TYPE_ORDER</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Maatoo\Maatoo\Observer\CategoryDeleteObserver" type="Maatoo\Maatoo\Observer\EntityDeleteObserver">
+        <arguments>
+            <argument name="entityType" xsi:type="const">Maatoo\Maatoo\Api\Data\SyncInterface::TYPE_CATEGORY</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Maatoo\Maatoo\Observer\ProductDeleteObserver" type="Maatoo\Maatoo\Observer\EntityDeleteObserver">
+        <arguments>
+            <argument name="entityType" xsi:type="const">Maatoo\Maatoo\Api\Data\SyncInterface::TYPE_PRODUCT</argument>
+        </arguments>
+    </virtualType>
+</config>

@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="maatoo_sync" resource="default" engine="innodb"
+           comment="Maatoo Order synchronization">
+        <column xsi:type="int" name="sync_id" padding="11" unsigned="true" nullable="false" identity="true"
+                comment="ID"/>
+        <column xsi:type="int" name="entity_type" nullable="false" identity="false" default="0" comment="Entity Type"/>
+        <column xsi:type="int" name="entity_id" nullable="false" identity="false" default="0"
+                comment="Entity ID in Store"/>
+        <column xsi:type="int" name="store_id" nullable="false" identity="false" default="0"
+                comment="Store ID"/>
+        <column xsi:type="int" name="maatoo_id" nullable="false" identity="false" default="0"
+                comment="Entity ID in Maatoo"/>
+        <column xsi:type="int" name="status" nullable="false" identity="false" default="0"
+                comment="Status synchronization"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="sync_id"/>
+        </constraint>
+        <index referenceId="SYNC_ENTITY_TYPE" indexType="btree">
+            <column name="entity_type"/>
+        </index>
+        <index referenceId="SYNC_ENTITY_ID" indexType="btree">
+            <column name="entity_id"/>
+        </index>
+        <index referenceId="SYNC_STORE_ENTITY_ID" indexType="btree">
+            <column name="store_id"/>
+        </index>
+        <index referenceId="SYNC_MAATOO_ENTITY_ID" indexType="btree">
+            <column name="maatoo_id"/>
+        </index>
+        <index referenceId="SYNC_ENTITY_STATUS" indexType="btree">
+            <column name="status"/>
+        </index>
+    </table>
+
+    <table name="maatoo_store" resource="default" engine="innodb"
+           comment="Maatoo Store">
+        <column xsi:type="int" name="id" padding="11" unsigned="true" nullable="false" identity="true"
+                comment="ID"/>
+        <column xsi:type="int" name="maatoo_store_id" nullable="false" identity="false" default="0"
+                comment="Store ID in Maatoo"/>
+        <column xsi:type="int" name="store_id" nullable="false" identity="false" default="0"
+                comment="Store ID in magento shop"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+        <index referenceId="MAATOO_MAATOO_STORE_ID" indexType="btree">
+            <column name="maatoo_store_id"/>
+        </index>
+        <index referenceId="MAATOO_STORE_ID" indexType="btree">
+            <column name="store_id"/>
+        </index>
+    </table>
+
+    <table name="maatoo_conversion" resource="default" engine="innodb"
+           comment="Maatoo Conversion">
+        <column xsi:type="int" name="conversion_id" padding="11" unsigned="true" nullable="false" identity="true"
+                comment="ID"/>
+        <column xsi:type="int" name="order_id" nullable="false" identity="false" default="0"
+                comment="Order ID"/>
+        <column xsi:type="text" name="value" nullable="false" comment="Conversion"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="conversion_id"/>
+        </constraint>
+        <index referenceId="MAATOO_CONVERCION_ORDER_ID" indexType="btree">
+            <column name="order_id"/>
+        </index>
+    </table>
+
+    <table name="maatoo_order_lead" resource="default" engine="innodb"
+           comment="Maatoo Lead id for order">
+        <column xsi:type="int" name="entity_id" padding="11" unsigned="true" nullable="false" identity="true"
+                comment="ID"/>
+        <column xsi:type="int" name="order_id" nullable="false" identity="false" default="0"
+                comment="Order ID in store"/>
+        <column xsi:type="int" name="lead_id" nullable="false" identity="false" default="0"
+                comment="Lead ID"/>
+        <column xsi:type="int" name="subscribe" nullable="false" identity="false" default="0"
+                comment="Subscribe"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <index referenceId="MAATOO_ORDER_LEAD_ORDER_ID" indexType="btree">
+            <column name="order_id"/>
+        </index>
+        <index referenceId="MAATOO_ORDER_LEAD_LEAD_ID" indexType="btree">
+            <column name="lead_id"/>
+        </index>
+    </table>
+</schema>

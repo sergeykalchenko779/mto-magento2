@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <maatoo>
+            <general>
+                <active>0</active>
+                <url></url>
+                <user></user>
+                <password></password>
+            </general>
+            <order>
+                <lifetime>10</lifetime>
+            </order>
+            <website>
+                <website_active>0</website_active>
+                <allowed_store>0</allowed_store>
+                <opt_in>0</opt_in>
+                <opt_in_text>Add marketing opt-in to order</opt_in_text>
+            </website>
+        </maatoo>
+        <csp>
+            <policies>
+                <storefront>
+                    <frame-ancestors>
+                        <inline>0</inline>
+                    </frame-ancestors>
+                </storefront>
+                <admin>
+                    <frame-ancestors>
+                        <inline>0</inline>
+                    </frame-ancestors>
+                </admin>
+            </policies>
+        </csp>
+    </default>
+</config>
