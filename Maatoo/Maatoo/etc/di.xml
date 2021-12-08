@@ -70,4 +70,15 @@
             <argument name="entityType" xsi:type="const">Maatoo\Maatoo\Api\Data\SyncInterface::TYPE_PRODUCT</argument>
         </arguments>
     </virtualType>
+<!--    <type name="Magento\Checkout\Api\PaymentInformationManagementInterface">-->
+<!--        <plugin name="order_maatoooptin_save-in-order" type="Maatoo\Maatoo\Plugin\Checkout\PaymentInformationManagementPlugin" sortOrder="10"/>-->
+<!--    </type>-->
+    <type name="Magento\Checkout\Api\PaymentInformationManagementInterface">
+        <plugin name="set_payment_data_before_save"
+                type="Maatoo\Maatoo\Plugin\Model\SavePaymentPlugin" sortOrder="10"/>
+    </type>
+    <type name="Magento\Checkout\Api\GuestPaymentInformationManagementInterface">
+        <plugin name="guest_set_payment_data_before_save"
+                type="Maatoo\Maatoo\Plugin\Model\GuestSavePaymentPlugin" sortOrder="10"/>
+    </type>
 </config>

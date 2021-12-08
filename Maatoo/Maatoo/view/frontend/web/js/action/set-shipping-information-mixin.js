@@ -22,14 +22,12 @@ define([
                 billingAddress['extension_attributes'] = {};
             }
 
-            console.log(shippingAddress.customAttributes);
-
             var attribute = shippingAddress.customAttributes.find(
                 function (element) {
                     return element.attribute_code === 'maatoo_opt_in';
                 }
             );
-console.log($.cookie('mage-cache-storage'));
+
             if (attribute && attribute.value) {
                 shippingAddress['extension_attributes']['maatoo_opt_in'] = attribute.value;
                 billingAddress['extension_attributes']['maatoo_opt_in'] = attribute.value;

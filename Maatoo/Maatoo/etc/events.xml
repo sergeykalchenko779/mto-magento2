@@ -40,7 +40,7 @@
     <event name="sales_quote_save_after">
         <observer name="maatoo_sales_quote_save_after_customer" instance="Maatoo\Maatoo\Observer\QuoteSaveByCustomerObserver" />
     </event>
-    <event name="checkout_submit_all_after">
-        <observer name="maatoo_checkout_submit_all_after" instance="Maatoo\Maatoo\Observer\CheckoutSubmitAllObserver" />
-    </event>
+<!--    <event name="checkout_submit_all_after">-->
+<!--        <observer name="maatoo_checkout_submit_all_after" instance="Maatoo\Maatoo\Observer\CheckoutSubmitAllObserver" />-->
+<!--    </event>-->
 </config>
