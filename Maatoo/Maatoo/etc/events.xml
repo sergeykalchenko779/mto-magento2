@@ -3,12 +3,12 @@
     <event name="customer_save_after">
         <observer name="maatoo_customer_save_after" instance="Maatoo\Maatoo\Observer\CustomerSaveObserver" />
     </event>
-<!--    <event name="sales_order_save_after">-->
-<!--        <observer name="maatoo_order_save_after" instance="Maatoo\Maatoo\Observer\OrderSaveObserver" />-->
-<!--    </event>-->
-<!--    <event name="sales_quote_save_after">-->
-<!--        <observer name="maatoo_quote_save_after" instance="Maatoo\Maatoo\Observer\QuoteSaveObserver" />-->
-<!--    </event>-->
+    <!--    <event name="sales_order_save_after">-->
+    <!--        <observer name="maatoo_order_save_after" instance="Maatoo\Maatoo\Observer\OrderSaveObserver" />-->
+    <!--    </event>-->
+    <!--    <event name="sales_quote_save_after">-->
+    <!--        <observer name="maatoo_quote_save_after" instance="Maatoo\Maatoo\Observer\QuoteSaveObserver" />-->
+    <!--    </event>-->
     <event name="catalog_category_save_after">
         <observer name="maatoo_category_save_after" instance="Maatoo\Maatoo\Observer\CategorySaveObserver" />
     </event>
@@ -35,12 +35,13 @@
 
     <event name="sales_order_save_after">
         <observer name="maatoo_sales_order_save_after_customer" instance="Maatoo\Maatoo\Observer\OrderSaveByCustomerObserver" />
+        <observer name="maatoo_order_save_after" instance="Maatoo\Maatoo\Observer\OrderSaveObserver" />
     </event>
 
     <event name="sales_quote_save_after">
         <observer name="maatoo_sales_quote_save_after_customer" instance="Maatoo\Maatoo\Observer\QuoteSaveByCustomerObserver" />
     </event>
-<!--    <event name="checkout_submit_all_after">-->
-<!--        <observer name="maatoo_checkout_submit_all_after" instance="Maatoo\Maatoo\Observer\CheckoutSubmitAllObserver" />-->
-<!--    </event>-->
+    <!--    <event name="checkout_submit_all_after">-->
+    <!--        <observer name="maatoo_checkout_submit_all_after" instance="Maatoo\Maatoo\Observer\CheckoutSubmitAllObserver" />-->
+    <!--    </event>-->
 </config>

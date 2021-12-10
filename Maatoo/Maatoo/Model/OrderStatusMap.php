@@ -7,14 +7,14 @@ class OrderStatusMap
     const DRAFT = 'draft';
 
     const ORDER_STATUS_MAP = [
-        'processing' => 'open',
+        'processing' => 'paid',
         'pending_payment' => 'open',
         'payment_review' => 'open',
         'fraud' => 'failed',
         'pending' => 'open',
-        'holded' => 'incomplete',
+        'holded' => 'open',
         'complete' => 'complete',
-        'closed' => 'complete',
+        'closed' => 'refund',
         'canceled' => 'canceled'
     ];
 
