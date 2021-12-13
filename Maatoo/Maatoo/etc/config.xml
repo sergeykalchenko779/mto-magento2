@@ -16,7 +16,7 @@
                 <website_active>0</website_active>
                 <allowed_store>0</allowed_store>
                 <opt_in>0</opt_in>
-                <opt_in_text>Add marketing opt-in to order</opt_in_text>
+                <opt_in_text>I want to receive emails with special offers</opt_in_text>
             </website>
         </maatoo>
         <csp>

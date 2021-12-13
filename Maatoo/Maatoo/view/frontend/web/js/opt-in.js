@@ -6,7 +6,7 @@ define([
 
         defaults: {
             value: 0,
-            valueMap: {false: '', true: 'Add marketing opt-in to order'}
+            valueMap: {false: '', true: 'I want to receive emails with special offers'}
         },
 
         initObservable: function () {

@@ -65,7 +65,7 @@
                 </field>
                 <field id="opt_in_text" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Add marketing opt-in text</label>
-                    <comment><![CDATA[Default text - 'Add marketing opt-in to order'.]]></comment>
+                    <comment><![CDATA[Default text - 'I want to receive emails with special offers'.]]></comment>
                     <depends>
                         <field id="active">1</field>
                         <field id="opt_in">1</field>

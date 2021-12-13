@@ -264,7 +264,7 @@ class Order
                 'externalDateUpdated' => $quote->getUpdatedAt(),
                 'externalDateCancelled' => $quote->getUpdatedAt(),
                 'value' => (float)$quote->getGrandTotal(),
-                'url' => '',
+                'url' => $this->urlBilder->getUrl('checkout/cart'),
                 'status' => OrderStatusMap::DRAFT,
                 'lead_id' => $leadId,
                 'conversion' => []
