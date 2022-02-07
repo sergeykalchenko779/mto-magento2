@@ -14,9 +14,9 @@ use Maatoo\Maatoo\Auth\AuthInterface;
 use Maatoo\Maatoo\Exception\ContextNotFoundException;
 
 /**
- * Mautic API Factory.
+ * maatoo API Factory.
  */
-class MauticApi
+class MaatooApi
 {
     /**
      * Get an API context object.
