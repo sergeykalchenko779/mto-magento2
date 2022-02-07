@@ -8,10 +8,10 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <tab id="maatoo_tab" translate="label" sortOrder="10">
-            <label>Maatoo</label>
+            <label>maatoo</label>
         </tab>
         <section id="maatoo" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
-            <label>Maatoo Settings</label>
+            <label>maatoo Settings</label>
             <tab>maatoo_tab</tab>
             <resource>Maatoo_Maatoo::maatoo</resource>
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
