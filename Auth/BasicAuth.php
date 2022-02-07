@@ -34,10 +34,10 @@
 |
 | To use, just pass the auth object to the Api context you are creating.
 |
-| use Maatoo\Maatoo\MauticApi;
+| use Maatoo\Maatoo\MaatooApi;
 |
 | // Get a Contact context
-| $api = new MauticApi();
+| $api = new MaatooApi();
 | $contactApi = $api->newApi('contacts', $auth, $settings['apiUrl']);
 |
 | // Get Contact list

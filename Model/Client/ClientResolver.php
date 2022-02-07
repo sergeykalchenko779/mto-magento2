@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Maatoo\Maatoo\Model\Client;
 
 use Magento\Framework\Encryption\EncryptorInterface;
-use Maatoo\Maatoo\MauticApi;
+use Maatoo\Maatoo\MaatooApi;
 use Maatoo\Maatoo\Auth\ApiAuth;
 
 class ClientResolver
