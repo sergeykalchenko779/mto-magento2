@@ -81,4 +81,7 @@
         <plugin name="guest_set_payment_data_before_save"
                 type="Maatoo\Maatoo\Plugin\Model\GuestSavePaymentPlugin" sortOrder="10"/>
     </type>
+    <type name="Magento\Newsletter\Controller\Subscriber\NewAction">
+        <plugin name="after_subscribe" type="Maatoo\Maatoo\Plugin\Controller\NewActionPlugin" sortOrder="20"/>
+    </type>
 </config>
