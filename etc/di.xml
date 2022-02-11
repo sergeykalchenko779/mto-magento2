@@ -84,4 +84,7 @@
     <type name="Magento\Newsletter\Controller\Subscriber\NewAction">
         <plugin name="after_subscribe" type="Maatoo\Maatoo\Plugin\Controller\NewActionPlugin" sortOrder="20"/>
     </type>
+    <type name="Magento\Newsletter\Model\Subscriber">
+        <plugin name="disable_signup_confirmation" type="Maatoo\Maatoo\Plugin\Model\NewsletterSubscriber" />
+    </type>
 </config>
