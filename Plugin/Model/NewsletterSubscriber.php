@@ -21,8 +21,7 @@ class NewsletterSubscriber
 
     public function beforeSendConfirmationSuccessEmail(\Magento\Newsletter\Model\Subscriber $subject)
     {
-        //$url = $this->scopeConfig->getValue(self::MAATOO_URL_PATH, $this->scopeStore);
-        if ($this->config->isNewsletterConfirmationEmailEnabled()) {
+        if ($this->config->isNewsletterConfirmationEmailDisabled()) {
             $subject->setImportMode(true);
         }
     }

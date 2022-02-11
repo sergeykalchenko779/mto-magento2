@@ -70,7 +70,7 @@ class Config
     /**
      * @var XML path of Maatoo Disable Default Newsletter Confirmation Email
      */
-    const MAATOO_NEWSLETTER_CONFIRMATION_EMAIL = 'maatoo/website/disable_newsletter_email';
+    const MAATOO_NEWSLETTER_CONFIRMATION_EMAIL = 'maatoo/newsletter/disable_newsletter_email';
 
     /**
      * Background constructor
@@ -199,7 +199,7 @@ class Config
     /**
      * @return bool
      */
-    public function isNewsletterConfirmationEmailEnabled()
+    public function isNewsletterConfirmationEmailDisabled()
     {
         return $this->scopeConfig->getValue(self::MAATOO_OPT_IN_TEXT, $this->scopeStore);
     }

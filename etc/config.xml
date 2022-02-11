@@ -18,6 +18,9 @@
                 <opt_in>0</opt_in>
                 <opt_in_text>I want to receive emails with special offers</opt_in_text>
             </website>
+            <newsletter>
+                <disable_newsletter_email>1</disable_newsletter_email>
+            </newsletter>
         </maatoo>
         <csp>
             <policies>
