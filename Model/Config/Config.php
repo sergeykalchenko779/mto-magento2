@@ -201,7 +201,7 @@ class Config
      */
     public function isNewsletterConfirmationEmailDisabled()
     {
-        return $this->scopeConfig->getValue(self::MAATOO_OPT_IN_TEXT, $this->scopeStore);
+        return $this->scopeConfig->getValue(self::MAATOO_NEWSLETTER_CONFIRMATION_EMAIL, $this->scopeStore);
     }
 
 
