@@ -4,7 +4,7 @@ namespace Maatoo\Maatoo\Plugin\Model;
 
 use Maatoo\Maatoo\Model\Config\Config;
 
-class NewsletterSubscriber implements \Magento\Checkout\Model\ConfigProviderInterface
+class NewsletterSubscriber
 {
     /**
      * @var Config
