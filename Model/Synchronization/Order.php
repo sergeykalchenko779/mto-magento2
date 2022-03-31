@@ -2,6 +2,7 @@
 
 namespace Maatoo\Maatoo\Model\Synchronization;
 
+use DateTime;
 use Maatoo\Maatoo\Api\Data\SyncInterface;
 use Maatoo\Maatoo\Model\Config\Config;
 use Maatoo\Maatoo\Model\OrderRepository;
@@ -87,20 +88,20 @@ class Order
 
 
     public function __construct(
-        \Maatoo\Maatoo\Model\StoreConfigManager $storeManager,
+        \Maatoo\Maatoo\Model\StoreConfigManager                    $storeManager,
         \Magento\Quote\Model\ResourceModel\Quote\CollectionFactory $collectionQuoteFactory,
-        \Magento\Framework\UrlInterface $urlBilder,
-        \Maatoo\Maatoo\Model\OrderRepository $orderRepository,
-        \Maatoo\Maatoo\Model\Config\Config $config,
-        \Maatoo\Maatoo\Adapter\AdapterInterface $adapter,
-        \Maatoo\Maatoo\Model\StoreMap $storeMap,
-        \Maatoo\Maatoo\Model\SyncRepository $syncRepository,
-        \Maatoo\Maatoo\Model\ConversionFactory $conversionFactory,
-        \Maatoo\Maatoo\Model\ResourceModel\Conversion $conversionResource,
-        \Maatoo\Maatoo\Model\OrderLeadFactory $orderLeadFactory,
-        \Maatoo\Maatoo\Model\ResourceModel\OrderLead $orderLeadResource,
-        \Magento\Framework\Serialize\Serializer\Serialize $serialize,
-        \Psr\Log\LoggerInterface $logger
+        \Magento\Framework\UrlInterface                            $urlBilder,
+        \Maatoo\Maatoo\Model\OrderRepository                       $orderRepository,
+        \Maatoo\Maatoo\Model\Config\Config                         $config,
+        \Maatoo\Maatoo\Adapter\AdapterInterface                    $adapter,
+        \Maatoo\Maatoo\Model\StoreMap                              $storeMap,
+        \Maatoo\Maatoo\Model\SyncRepository                        $syncRepository,
+        \Maatoo\Maatoo\Model\ConversionFactory                     $conversionFactory,
+        \Maatoo\Maatoo\Model\ResourceModel\Conversion              $conversionResource,
+        \Maatoo\Maatoo\Model\OrderLeadFactory                      $orderLeadFactory,
+        \Maatoo\Maatoo\Model\ResourceModel\OrderLead               $orderLeadResource,
+        \Magento\Framework\Serialize\Serializer\Serialize          $serialize,
+        \Psr\Log\LoggerInterface                                   $logger
     )
     {
         $this->storeManager = $storeManager;
@@ -149,19 +150,19 @@ class Order
 
                 $parameters = $this->getParameters($quote);
 
-                if(empty($parameters)) {
-                    continue ;
+                if (empty($parameters)) {
+                    continue;
                 }
 
                 $conversion = $this->conversionFactory->create();
                 $this->conversionResource->load($conversion, $quote->getId(), 'order_id');
                 if (!empty($conversion->getValue())) {
                     $conversionArray = $this->serialize->unserialize($conversion->getValue());
-                    if(isset($conversionArray['source']) && isset($conversionArray['lead'])) {
+                    if (isset($conversionArray['source']) && isset($conversionArray['lead'])) {
                         $parameters['conversion']['type'] = $conversionArray['source'][0];
                         $parameters['conversion']['id'] = $conversionArray['source'][1];
 
-                        if(isset($parameters['lead_id'])) {
+                        if (isset($parameters['lead_id'])) {
                             //$parameters['lead_id'] = $conversionArray['lead'];
                         }
                     }
@@ -191,14 +192,15 @@ class Order
 
                     // Update contacts
                     $lead = $this->getLead($quote->getId());
-                    if(!empty($lead->getId()) && !empty($parameters['email'])) {
+                    if (!empty($lead->getId()) && !empty($parameters['email'])) {
                         $leadId = $lead->getLeadId();
                         $data = [
                             'firstname' => $parameters['firstName'] ?? '',
                             'lastname' => $parameters['lastName'] ?? '',
                             'email' => $parameters['email'] ?? '',
+                            'birthday' => $parameters['birthday']
                         ];
-                        if(!empty($lead->getSubscribe())) {
+                        if (!empty($lead->getSubscribe())) {
                             $data['tags'] = $this->storeManager->getTags($store);
                         }
                         $this->adapter->makeRequest('contacts/' . $leadId . '/edit', $data, 'PATCH');
@@ -223,6 +225,8 @@ class Order
     }
 
     /**
+     * Set parameters to sync in maatoo system
+     *
      * @param \Magento\Quote\Model\Quote $quote
      * @return array|null
      */
@@ -232,7 +236,13 @@ class Order
         $order = $this->orderRepository->getByIncrementId($quote->getReservedOrderId());
         $leadId = $this->getLeadId($quote->getId());
 
-        if(!empty($order) && !empty($order->getId())) {
+        if ($order !== null && !empty($order->getId())) {
+            $billingAddress = $order->getBillingAddress();
+            $birthdayDateTime = $billingAddress ? $billingAddress->getBirthday() : '';
+            if ($birthdayDateTime) {
+                $birthdayDate = DateTime::createFromFormat('Y-m-d H:i:s', $birthdayDateTime)->format('Y-m-d');
+            }
+
             $parameters = [
                 'store' => $this->storeMap->getStoreToMaatoo($order->getStoreId()),
                 'externalOrderId' => $order->getId(),
@@ -247,14 +257,15 @@ class Order
                 'firstName' => $order->getCustomerFirstname() ?: '',
                 'lastName' => $order->getCustomerLastname() ?: '',
                 'lead_id' => $leadId,
-                'conversion' => []
+                'conversion' => [],
+                'birthday' => $birthdayDate ?? ''
             ];
         } else {
             $updateTime = strtotime($quote->getUpdatedAt());
-            if($updateTime > (date('U')-1800)) {
+            if ($updateTime > (date('U') - 1800)) {
                 return null;
             }
-            if(empty($leadId)) {
+            if (empty($leadId)) {
                 return null;
             }
             $parameters = [
@@ -287,7 +298,7 @@ class Order
         /** @var \Maatoo\Maatoo\Model\OrderLead $orderLead */
         $orderLead = $this->getLead($orderId);
         $leadId = '';
-        if(!empty($orderLead->getLeadId())) {
+        if (!empty($orderLead->getLeadId())) {
             $leadId = $orderLead->getLeadId();
         }
         return $leadId;

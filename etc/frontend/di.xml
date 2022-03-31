@@ -7,4 +7,7 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\Checkout\Block\Checkout\LayoutProcessor">
+        <plugin name="birthday" type="Maatoo\Maatoo\Model\Plugin\Checkout\LayoutProcessor" sortOrder="100"/>
+    </type>
 </config>

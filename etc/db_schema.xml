@@ -88,4 +88,11 @@
             <column name="lead_id"/>
         </index>
     </table>
+
+    <table name="quote_address" resource="default" engine="innodb">
+        <column xsi:type="datetime" name="birthday" nullable="true" comment="Birthday"/>
+    </table>
+    <table name="sales_order_address" resource="default" engine="innodb">
+        <column xsi:type="datetime" name="birthday" nullable="true" comment="Birthday"/>
+    </table>
 </schema>

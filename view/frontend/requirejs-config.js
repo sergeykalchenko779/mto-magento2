@@ -7,6 +7,9 @@ var config = {
             'Magento_Checkout/js/action/set-payment-information': {
                 'Maatoo_Maatoo/js/order/set-payment-information-mixin': true
             },
+            'Magento_Checkout/js/action/set-shipping-information': {
+                'Maatoo_Maatoo/js/set-birthday-mixin': true
+            }
         }
     }
 };

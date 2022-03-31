@@ -43,6 +43,11 @@ class Config
     const MAATAA_WEBSITE_ACTIVE = 'maatoo/website/website_active';
 
     /**
+     * @var XML path of Maatoo 'birthday in checkout' config
+     */
+    const MAATOO_BIRTHDAY_IN_CHECKOUT = 'maatoo/website/birthday_in_checkout';
+
+    /**
      * @var XML path of Maatoo Stores
      */
     const MAATOO_ALLOWED_STORE = 'maatoo/website/allowed_store';
@@ -99,7 +104,7 @@ class Config
     public function getMaatooUrl(): string
     {
         $url = $this->scopeConfig->getValue(self::MAATOO_URL_PATH, $this->scopeStore);
-        if(substr($url, -1) != '/') {
+        if (substr($url, -1) != '/') {
             $url = $url . '/';
         }
         return $url;
@@ -137,9 +142,9 @@ class Config
     public function getWorkspaceName()
     {
         $url = parse_url($this->getMaatooUrl(), PHP_URL_HOST);
-        if(!empty($url)) {
-            $url = str_replace('www.','',$url);
-            $explode = explode('.',$url);
+        if (!empty($url)) {
+            $url = str_replace('www.', '', $url);
+            $explode = explode('.', $url);
             $workspacename = $explode[0];
             return (string)$workspacename;
         }
@@ -180,6 +185,19 @@ class Config
             \Maatoo\Maatoo\Model\Config\Config::MAATAA_WEBSITE_ACTIVE,
             \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITES,
             $websiteId
+        );
+    }
+
+
+    /**
+     * @param $websiteId
+     * @return bool
+     */
+    public function isAllowedBirthdayInCheckout($websiteId = null)
+    {
+        return $this->scopeConfig->getValue(
+            \Maatoo\Maatoo\Model\Config\Config::MAATOO_BIRTHDAY_IN_CHECKOUT,
+            \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITES
         );
     }
 
