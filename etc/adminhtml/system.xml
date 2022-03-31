@@ -54,6 +54,10 @@
                     <label>Enable this Website</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="birthday_in_checkout" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable birthday field in checkout</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
                 <field id="allowed_store" translate="label" type="select" sortOrder="20" showInDefault="0" showInWebsite="1" showInStore="0">
                     <label>Allowe Store</label>
                     <source_model>Maatoo\Maatoo\Model\Source\Store</source_model>

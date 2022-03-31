@@ -87,4 +87,15 @@
     <type name="Magento\Newsletter\Model\Subscriber">
         <plugin name="disable_signup_confirmation" type="Maatoo\Maatoo\Plugin\Model\NewsletterSubscriber" />
     </type>
+
+    <type name="Magento\Checkout\Model\ShippingInformationManagement">
+        <plugin name="Maatoo_SaveBirthdayIntoQuoteAddress_Plugin"
+                type="Maatoo\Maatoo\Plugin\Index\SaveBirthdayIntoQuoteAddress" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Magento\Sales\Model\Service\OrderService">
+        <plugin name="Maatoo_SaveBirthdayIntoOrderAddress_Plugin"
+                type="Maatoo\Maatoo\Plugin\Index\SaveBirthdayIntoOrderAddress" sortOrder="1" disabled="false"/>
+        <plugin name="Maatoo_SyncOrders_Plugin"
+                type="Maatoo\Maatoo\Plugin\Index\SyncOrdersAfterPlace" sortOrder="1" disabled="false"/>
+    </type>
 </config>

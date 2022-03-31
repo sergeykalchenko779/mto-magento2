@@ -3,4 +3,7 @@
     <extension_attributes for="Magento\Quote\Api\Data\PaymentInterface">
         <attribute code="maatoo_opt_in" type="string" />
     </extension_attributes>
+    <extension_attributes for="Magento\Quote\Api\Data\AddressInterface">
+        <attribute code="birthday" type="string" />
+    </extension_attributes>
 </config>

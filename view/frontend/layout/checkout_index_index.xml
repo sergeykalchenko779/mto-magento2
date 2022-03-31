@@ -4,7 +4,7 @@
     <body>
         <referenceBlock name="checkout.root">
             <arguments>
-                <argument name="jsLayout" xsi:type="array">
+                <argument name="jsLayout" xsi:type="array" >
                     <item name="components" xsi:type="array">
                         <item name="checkout" xsi:type="array">
                             <item name="children" xsi:type="array">
@@ -16,6 +16,25 @@
                                                     <item name="children" xsi:type="array">
                                                         <item name="shipping-address-fieldset" xsi:type="array">
                                                             <item name="children" xsi:type="array">
+                                                                <item name="birthday" xsi:type="array">
+                                                                    <item name="component" xsi:type="string">Magento_Ui/js/form/element/date</item>
+                                                                    <item name="config" xsi:type="array">
+                                                                        <item name="template" xsi:type="string">ui/form/field</item>
+                                                                        <item name="elementTmpl" xsi:type="string">ui/form/element/date</item>
+                                                                        <item name="options" xsi:type="array">
+                                                                            <item name="dateFormat" xsi:type="string">yyyy-MM-dd</item>
+                                                                            <item name="showsTime" xsi:type="boolean">false</item>
+                                                                        </item>
+                                                                        <item name="id" xsi:type="string">birthday</item>
+                                                                    </item>
+                                                                    <item name="dataScope" xsi:type="string">shippingAddress.custom_attributes.birthday</item>
+                                                                    <item name="label" xsi:type="string">Birthday</item>
+                                                                    <item name="provider" xsi:type="string">checkoutProvider</item>
+                                                                    <item name="visible" xsi:type="boolean">true</item>
+                                                                    <item name="sortOrder" xsi:type="number">50</item>
+                                                                    <item name="id" xsi:type="string">birthday</item>
+                                                                    <item name="validation" xsi:type="array"></item>
+                                                                </item>
                                                             </item>
                                                         </item>
                                                     </item>
