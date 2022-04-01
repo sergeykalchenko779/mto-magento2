@@ -9,7 +9,10 @@ var config = {
             },
             'Magento_Checkout/js/action/set-shipping-information': {
                 'Maatoo_Maatoo/js/set-birthday-mixin': true
-            }
+            },
+            'Magento_Checkout/js/model/shipping-rate-processor/new-address': {
+                'Maatoo_Maatoo/js/set-birthday-into-customer-address-mixin': true
+            },
         }
     }
 };
