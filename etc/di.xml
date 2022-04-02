@@ -98,4 +98,9 @@
         <plugin name="Maatoo_SyncOrders_Plugin"
                 type="Maatoo\Maatoo\Plugin\Index\SyncOrdersAfterPlace" sortOrder="1" disabled="false"/>
     </type>
+    <type name="Magento\Customer\Api\AddressRepositoryInterface">
+        <plugin name="maatoo_save_birthday_into_customer_address"
+                type="Maatoo\Maatoo\Plugin\Index\SaveBirthdayIntoCustomerAddress"
+                sortOrder="10"/>
+    </type>
 </config>

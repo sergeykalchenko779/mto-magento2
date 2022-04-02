@@ -175,10 +175,12 @@ class SyncOrdersAfterPlace
                     'firstname' => $parameters['firstName'] ?? '',
                     'lastname' => $parameters['lastName'] ?? '',
                     'email' => $parameters['email'] ?? '',
-                    'birthday' => $parameters['birthday']
                 ];
                 if (!empty($lead->getSubscribe())) {
                     $data['tags'] = $this->storeManager->getTags($store);
+                }
+                if (isset($parameters['birthday']) && $parameters['birthday']) {
+                    $data['birthday_date'] = $parameters['birthday'];
                 }
                 $this->adapter->makeRequest('contacts/' . $leadId . '/edit', $data, 'PATCH');
             }
