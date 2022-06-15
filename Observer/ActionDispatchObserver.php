@@ -56,7 +56,7 @@ class ActionDispatchObserver implements ObserverInterface
             $ctDecode = base64_decode(urldecode($request->getParam('ct')));
             if ($ctDecode != false) {
                 $ct = unserialize($ctDecode);
-                if (isset($ct['source'])) {
+                if (isset($ct['channel'])) {
                     $this->session->setConversionData($this->serialize->serialize($ct));
                 }
             }

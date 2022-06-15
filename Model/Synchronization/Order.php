@@ -158,9 +158,9 @@ class Order
                 $this->conversionResource->load($conversion, $quote->getId(), 'order_id');
                 if (!empty($conversion->getValue())) {
                     $conversionArray = $this->serialize->unserialize($conversion->getValue());
-                    if (isset($conversionArray['source']) && isset($conversionArray['lead'])) {
-                        $parameters['conversion']['type'] = $conversionArray['source'][0];
-                        $parameters['conversion']['id'] = $conversionArray['source'][1];
+                    if (isset($conversionArray['channel']) && isset($conversionArray['lead'])) {
+                        $parameters['conversion']['type'] = array_key_first($conversionArray['channel']);
+                        $parameters['conversion']['id'] = $conversionArray['channel'][array_key_first($conversionArray['channel'])];
 
                         if (isset($parameters['lead_id'])) {
                             //$parameters['lead_id'] = $conversionArray['lead'];
