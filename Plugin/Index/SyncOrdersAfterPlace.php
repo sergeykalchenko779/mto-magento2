@@ -10,6 +10,7 @@ use Maatoo\Maatoo\Model\ResourceModel\Conversion;
 use Maatoo\Maatoo\Model\Sync;
 use Maatoo\Maatoo\Model\Synchronization\Order;
 use Maatoo\Maatoo\Model\SyncRepository;
+use Maatoo\Maatoo\Model\StoreConfigManager;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Serialize\Serializer\Serialize;
 use Magento\Quote\Api\CartRepositoryInterface;
@@ -29,6 +30,11 @@ class SyncOrdersAfterPlace
      * @var StoreManagerInterface
      */
     private StoreManagerInterface $storeManager;
+
+    /**
+     * @var StoreConfigManager $storeConfigManager
+     */
+    private StoreConfigManager $storeConfigManager;
 
     /**
      * @var SyncRepository
@@ -74,19 +80,21 @@ class SyncOrdersAfterPlace
      * Construct
      *
      * @param CartRepositoryInterface $cartRepository
-     * @param StoreManagerInterface $storeManager
-     * @param SyncRepository $syncRepository
-     * @param Conversion $conversionResource
-     * @param ConversionFactory $conversionFactory
-     * @param Serialize $serialize
-     * @param Config $config
-     * @param AdapterInterface $adapter
-     * @param LoggerInterface $logger
-     * @param Order $order
+     * @param StoreManagerInterface   $storeManager
+     * @param StoreConfigManager      $storeConfigManager
+     * @param SyncRepository          $syncRepository
+     * @param Conversion              $conversionResource
+     * @param ConversionFactory       $conversionFactory
+     * @param Serialize               $serialize
+     * @param Config                  $config
+     * @param AdapterInterface        $adapter
+     * @param LoggerInterface         $logger
+     * @param Order                   $order
      */
     public function __construct(
         CartRepositoryInterface $cartRepository,
         StoreManagerInterface   $storeManager,
+        StoreConfigManager      $storeConfigManager,
         SyncRepository          $syncRepository,
         Conversion              $conversionResource,
         ConversionFactory       $conversionFactory,
@@ -99,6 +107,7 @@ class SyncOrdersAfterPlace
     {
         $this->cartRepository = $cartRepository;
         $this->storeManager = $storeManager;
+        $this->storeConfigManager = $storeConfigManager;
         $this->syncRepository = $syncRepository;
         $this->conversionResource = $conversionResource;
         $this->conversionFactory = $conversionFactory;
@@ -177,7 +186,7 @@ class SyncOrdersAfterPlace
                     'email' => $parameters['email'] ?? '',
                 ];
                 if (!empty($lead->getSubscribe())) {
-                    $data['tags'] = $this->storeManager->getTags($store);
+                    $data['tags'] = $this->storeConfigManager->getTags($store);
                 }
                 if (isset($parameters['birthday']) && $parameters['birthday']) {
                     $data['birthday_date'] = $parameters['birthday'];
