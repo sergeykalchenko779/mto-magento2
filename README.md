@@ -4,7 +4,7 @@
 
 ##  Upload extension to Magento
 
-1. Run command: composer require maatoo/mto-magento2:1.2.2 --no-update
+1. Run command: composer require maatoo/mto-magento2 --no-update
 2. Run command  composer update
 
 https://devdocs.magento.com/cloud/howtos/install-components.html
@@ -24,7 +24,7 @@ Also, if a client server has the same configurations as on your stg php commands
 
 ## Update Extension
 
-1. Run command: composer require maatoo/mto-magento2:1.2.2
+1. Run command: composer update maatoo/mto-magento2
 2. Run command: php bin/magento maintenance:enable
 3. Run command: php bin/magento setup:upgrade
 4. Run command: php bin/magento setup:di:compile
