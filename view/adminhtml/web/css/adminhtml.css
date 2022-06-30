@@ -1,0 +1,16 @@
+@font-face {
+    font-family: 'maatoo';
+    src:  url('../fonts/maatoo.eot?hg6ngr');
+    src:  url('../fonts/maatoo.eot?hg6ngr#iefix') format('embedded-opentype'),
+    url('../fonts/maatoo.ttf?hg6ngr') format('truetype'),
+    url('../fonts/maatoo.woff?hg6ngr') format('woff'),
+    url('../fonts/maatoo.svg?hg6ngr#maatoo') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.admin__menu .item-maatoo-menu.parent.level-0 > a:before {
+    font-family: 'maatoo';
+    content: "\e900"
+}
+
