@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Maatoo_Maatoo::maatoo_menu"
+             title="maatoo"
+             module="Maatoo_Maatoo"
+             sortOrder="110"
+             dependsOnModule="Maatoo_Maatoo"
+             resource="Maatoo_Maatoo::main_menu"
+        />
+        <add id="Maatoo_Maatoo::config_menu"
+             title="Configuration"
+             module="Maatoo_Maatoo"
+             sortOrder="10"
+             resource="Maatoo_Maatoo::config_maatoo"
+             parent="Maatoo_Maatoo::maatoo_menu"
+             action="adminhtml/system_config/edit/section/maatoo"
+        />
+    </menu>
+</config>        
