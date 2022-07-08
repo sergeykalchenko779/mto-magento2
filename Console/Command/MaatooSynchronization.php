@@ -5,6 +5,8 @@ namespace Maatoo\Maatoo\Console\Command;
 
 use Exception;
 use Magento\Framework\Console\Cli;
+use Magento\Framework\App\State;
+use Magento\Framework\App\Area;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -38,6 +40,10 @@ class MaatooSynchronization extends Command
      * @var OrderLines
      */
     private $orderLines;
+    /**
+     * @var State
+     */
+    private $state;
 
     public function __construct(
         Store $store,
@@ -45,6 +51,7 @@ class MaatooSynchronization extends Command
         Product $product,
         Order $order,
         OrderLines $orderLines,
+        State $state,
         string $name = null
     )
     {
@@ -54,6 +61,7 @@ class MaatooSynchronization extends Command
         $this->product = $product;
         $this->order = $order;
         $this->orderLines = $orderLines;
+        $this->state = $state;
     }
 
     /**
@@ -68,6 +76,15 @@ class MaatooSynchronization extends Command
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $this->state->emulateAreaCode(
+            Area::AREA_FRONTEND,
+            [$this, 'generate'],
+            [$input, $output]
+        );
+    }
+
+    protected function generate(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('<info>Maatoo synchronization stores started.</info>');
         $this->store->sync(
