@@ -84,7 +84,7 @@ class MaatooSynchronization extends Command
         );
     }
 
-    protected function generate(InputInterface $input, OutputInterface $output)
+    public function generate(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('<info>Maatoo synchronization stores started.</info>');
         $this->store->sync(
