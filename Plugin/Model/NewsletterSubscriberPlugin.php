@@ -11,7 +11,7 @@ use Magento\Store\Api\Data\StoreInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Newsletter\Model\Subscriber;
 
-class NewsletterSubscriber
+class NewsletterSubscriberPlugin
 {
     /**
      * @var ScopeConfigInterface
