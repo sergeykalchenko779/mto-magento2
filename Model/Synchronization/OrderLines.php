@@ -109,8 +109,15 @@ class OrderLines
         /** @var \Magento\Quote\Model\ResourceModel\Quote\Item\Collection $collection */
         $collection = $this->collectionQuoteItemFactory->create();
         $lifetime = $this->config->getOrderLifetime();
-        $collection->getSelect()->where(
+
+        $select = $collection->getSelect();
+        $select->where(
             new \Zend_Db_Expr('TIME_TO_SEC(TIMEDIFF(CURRENT_TIMESTAMP, `updated_at`)) <= ' . $lifetime * 24 * 60 * 60)
+        );
+        $select->join([
+            'additional_table' => $collection->getTable('catalog_product_entity_int')
+        ],
+            'main_table.product_id = additional_table.entity_id AND additional_table.attribute_id = 97 AND additional_table.value <> 2'
         );
 
         foreach ($collection->getItems() as $item) {
