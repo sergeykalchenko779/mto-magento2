@@ -134,7 +134,7 @@ class OrderLines
                 $maatooSyncProductRow = $this->syncRepository->getRow([
                     'entity_id' => $item->getData('product_id'),
                     'entity_type' => SyncInterface::TYPE_PRODUCT,
-                    'store_id' => $item->getData('store_id')
+                    'store_id' => $store->getId()
                 ]);
 
                 if (empty($maatooSyncProductRow['maatoo_id'])) {
@@ -144,7 +144,7 @@ class OrderLines
                 $maatooSyncOrderRow = $this->syncRepository->getRow([
                     'entity_id' => $item->getData('quote_id'),
                     'entity_type' => SyncInterface::TYPE_ORDER,
-                    'store_id' => $item->getData('store_id')
+                    'store_id' => $store->getId()
                 ]);
 
                 if (empty($maatooSyncOrderRow['maatoo_id'])) {
@@ -183,7 +183,7 @@ class OrderLines
                     $sync->setStatus(SyncInterface::STATUS_SYNCHRONIZED);
                     $sync->setMaatooId($result['orderLine']['id']);
                     $sync->setEntityId($item->getId());
-                    $sync->setStoreId($item->getData('store_id'));
+                    $sync->setStoreId($store->getId());
                     $sync->setEntityType(SyncInterface::TYPE_ORDER_LINES);
                     $this->syncRepository->save($sync);
                 }
