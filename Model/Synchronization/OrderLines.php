@@ -59,6 +59,11 @@ class OrderLines
     private $logger;
 
     /**
+     * @var \Magento\Eav\Model\ResourceModel\Entity\Attribute
+     */
+    private $eavAttribute;
+
+    /**
      * @param \Maatoo\Maatoo\Model\StoreConfigManager $storeManager
      * @param CollectionFactory $collectionOrderFactory
      * @param Quote\Item\CollectionFactory $collectionQuoteItemFactory
@@ -68,6 +73,7 @@ class OrderLines
      * @param \Maatoo\Maatoo\Model\SyncRepository $syncRepository
      * @param Order $syncOrder
      * @param \Psr\Log\LoggerInterface $logger
+     * @param \Magento\Eav\Model\ResourceModel\Entity\Attribute $eavAttribute
      */
     public function __construct(
         \Maatoo\Maatoo\Model\StoreConfigManager $storeManager,
@@ -79,7 +85,8 @@ class OrderLines
         \Maatoo\Maatoo\Model\SyncRepository $syncRepository,
         \Maatoo\Maatoo\Model\Synchronization\Order $syncOrder,
         \Maatoo\Maatoo\Model\Config\Config $config,
-        \Psr\Log\LoggerInterface $logger
+        \Psr\Log\LoggerInterface $logger,
+        \Magento\Eav\Model\ResourceModel\Entity\Attribute $eavAttribute
     )
     {
         $this->storeManager = $storeManager;
@@ -92,6 +99,7 @@ class OrderLines
         $this->syncOrder = $syncOrder;
         $this->config = $config;
         $this->logger = $logger;
+        $this->eavAttribute = $eavAttribute;
     }
 
     /**
@@ -106,17 +114,27 @@ class OrderLines
             $collection = $this->collectionQuoteItemFactory->create();
             $lifetime = $this->config->getOrderLifetime();
 
+            $attributeId = $this->eavAttribute->getIdByCode(
+                \Magento\Catalog\Model\Product::ENTITY,
+                'status'
+            );
+
             $select = $collection->getSelect();
             $select->where(
                 new \Zend_Db_Expr('TIME_TO_SEC(TIMEDIFF(CURRENT_TIMESTAMP, `updated_at`)) <= ' . $lifetime * 24 * 60 * 60)
             );
 
-            // Don't sync quote items with inactive products
-            $select->join([
-                'additional_table' => $collection->getTable('catalog_product_entity_int')
-            ],
-                'main_table.product_id = additional_table.entity_id AND additional_table.attribute_id = 97 AND additional_table.value <> 2'
-            );
+            if ($attributeId) {
+                $select->join([
+                    'additional_table' => $collection->getTable('catalog_product_entity_int')
+                ],
+                    sprintf(
+                        "main_table.product_id = additional_table.entity_id AND additional_table.attribute_id = %s AND additional_table.value <> %s",
+                        $attributeId,
+                        \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED
+                    )
+                );
+            }
 
             foreach ($collection->getItems() as $item) {
 
