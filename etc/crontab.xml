@@ -13,8 +13,14 @@
         <job name="maatoo_cron_order" instance="Maatoo\Maatoo\Cron\Order" method="execute">
             <schedule>*/5 * * * *</schedule>
         </job>
+        <job name="maatoo_cron_order_all" instance="Maatoo\Maatoo\Cron\OrderAll" method="execute">
+            <schedule>*/10 * * * *</schedule>
+        </job>
         <job name="maatoo_cron_order_lines" instance="Maatoo\Maatoo\Cron\OrderLines" method="execute">
             <schedule>*/10 * * * *</schedule>
+        </job>
+        <job name="maatoo_cron_order_lines_all" instance="Maatoo\Maatoo\Cron\OrderLinesAll" method="execute">
+            <schedule>*/15 * * * *</schedule>
         </job>
 	</group>
 </config>

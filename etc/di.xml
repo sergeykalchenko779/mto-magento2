@@ -8,7 +8,9 @@
                 <item name="maatoo_sync_categories" xsi:type="object">Maatoo\Maatoo\Console\Command\SyncCategories</item>
                 <item name="maatoo_sync_products" xsi:type="object">Maatoo\Maatoo\Console\Command\SyncProducts</item>
                 <item name="maatoo_sync_orders" xsi:type="object">Maatoo\Maatoo\Console\Command\SyncOrders</item>
+                <item name="maatoo_sync_all_orders" xsi:type="object">Maatoo\Maatoo\Console\Command\SyncOrdersAll</item>
                 <item name="maatoo_sync_order_lines" xsi:type="object">Maatoo\Maatoo\Console\Command\SyncOrderLines</item>
+                <item name="maatoo_sync_all_order_lines" xsi:type="object">Maatoo\Maatoo\Console\Command\SyncOrderLinesAll</item>
             </argument>
         </arguments>
     </type>

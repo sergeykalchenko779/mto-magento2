@@ -55,6 +55,21 @@ interface SyncInterface
     const STATUS_DELETED = 3;
 
     /**
+     * sales_orders order need to sync
+     */
+    const ORDER_STATUS_EMPTY = 0;
+
+    /**
+     * sales_orders order is synchronized
+     */
+    const ORDER_STATUS_SYNCHRONIZED = 1;
+
+    /**
+     * sales_orders order_lines is synchronized
+     */
+    const ORDER_LINES_STATUS_SYNCHRONIZED = 2;
+
+    /**
      * @return int
      */
     public function getEntityId();

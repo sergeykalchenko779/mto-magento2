@@ -95,4 +95,8 @@
     <table name="sales_order_address" resource="default" engine="innodb">
         <column xsi:type="datetime" name="birthday" nullable="true" comment="Birthday"/>
     </table>
+
+    <table name="sales_order">
+        <column xsi:type="smallint" name="maatoo_sync" nullable="false" default="0" comment="Maatoo Sync Flag"/>
+    </table>
 </schema>
