@@ -141,7 +141,8 @@ class Product
                 $price = $this->productHelper->getPrice($product);
                 $categoryIds = $product->getCategoryIds();
 
-                if (empty($categoryIds) || empty($price)) {
+                // Don't allow empty categories
+                if (empty($categoryIds)) {
                     continue;
                 }
 

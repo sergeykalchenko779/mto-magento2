@@ -126,161 +126,158 @@ class OrderLines
     {
         //$this->syncOrder->sync($cl);
 
-        $storesAllowed = [];
         foreach ($this->storeManager->getStores() as $store) {
-            $storesAllowed[] = $store->getId();
-        }
-        $storesAllowed = implode(',', $storesAllowed);
-        /** @var \Magento\Quote\Model\ResourceModel\Quote\Item\Collection $collection */
-        $collection = $this->collectionQuoteItemFactory->create();
-        $lifetime = $this->config->getOrderLifetime();
+            /** @var \Magento\Quote\Model\ResourceModel\Quote\Item\Collection $collection */
+            $collection = $this->collectionQuoteItemFactory->create();
+            $lifetime = $this->config->getOrderLifetime();
 
-        $attributeId = $this->eavAttribute->getIdByCode(
-            \Magento\Catalog\Model\Product::ENTITY,
-            'status'
-        );
-
-        $select = $collection->getSelect();
-        $select->where(
-            new \Zend_Db_Expr('TIME_TO_SEC(TIMEDIFF(CURRENT_TIMESTAMP, `updated_at`)) <= ' . $lifetime * 24 * 60 * 60)
-        );
-
-        if ($attributeId) {
-            $select->join([
-                'additional_table' => $collection->getTable('catalog_product_entity_int')
-            ],
-                sprintf(
-                    "main_table.product_id = additional_table.entity_id AND additional_table.attribute_id = %s AND additional_table.value <> %s",
-                    $attributeId,
-                    \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED
-                )
+            $attributeId = $this->eavAttribute->getIdByCode(
+                \Magento\Catalog\Model\Product::ENTITY,
+                'status'
             );
-        }
 
-        $updatedOrderItems = [];
-        $orderLines = [];
+            $select = $collection->getSelect();
+            $select->where(
+                new \Zend_Db_Expr('TIME_TO_SEC(TIMEDIFF(CURRENT_TIMESTAMP, `updated_at`)) <= ' . $lifetime * 24 * 60 * 60)
+            );
 
-        foreach ($collection->getItems() as $item) {
-
-            /** @var \Maatoo\Maatoo\Model\Sync $sync */
-            $sync = $this->syncRepository->getByParam([
-                'entity_id' => $item->getId(),
-                'entity_type' => SyncInterface::TYPE_ORDER_LINES,
-                'store_id' => $item->getStoreId(),
-            ]);
-
-            if ($sync->getData('status') == SyncInterface::STATUS_SYNCHRONIZED) {
-                continue;
+            if ($attributeId) {
+                $select->join([
+                    'additional_table' => $collection->getTable('catalog_product_entity_int')
+                ],
+                    sprintf(
+                        "main_table.product_id = additional_table.entity_id AND additional_table.attribute_id = %s AND additional_table.value <> %s",
+                        $attributeId,
+                        \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED
+                    )
+                );
             }
 
-            $maatooSyncProductRow = $this->syncRepository->getRow([
-                'entity_id' => $item->getData('product_id'),
-                'entity_type' => SyncInterface::TYPE_PRODUCT,
-                'store_id' => $item->getData('store_id')
-            ]);
+            $updatedOrderItems = [];
+            $orderLines = [];
 
-            if (empty($maatooSyncProductRow['maatoo_id'])) {
-                continue;
-            }
+            foreach ($collection->getItems() as $item) {
 
-            $maatooSyncOrderRow = $this->syncRepository->getRow([
-                'entity_id' => $item->getData('quote_id'),
-                'entity_type' => SyncInterface::TYPE_ORDER,
-                'store_id' => $item->getData('store_id')
-            ]);
+                /** @var \Maatoo\Maatoo\Model\Sync $sync */
+                $sync = $this->syncRepository->getByParam([
+                    'entity_id' => $item->getId(),
+                    'entity_type' => SyncInterface::TYPE_ORDER_LINES,
+                    'store_id' => $store->getId()
+                ]);
 
-            if (empty($maatooSyncOrderRow['maatoo_id'])) {
-                continue;
-            }
+                if ($sync->getData('status') == SyncInterface::STATUS_SYNCHRONIZED) {
+                    continue;
+                }
 
-            $parameters = [
-                'store' => $this->storeMap->getStoreToMaatoo($item->getStoreId()),
-                "product" => $maatooSyncProductRow['maatoo_id'],
-                "order" => $maatooSyncOrderRow['maatoo_id'],
-                "quantity" => $item->getData('qty')
-            ];
+                $maatooSyncProductRow = $this->syncRepository->getRow([
+                    'entity_id' => $item->getData('product_id'),
+                    'entity_type' => SyncInterface::TYPE_PRODUCT,
+                    'store_id' => $store->getId()
+                ]);
 
-            if (count($orderLines) == 99) {
-                break;
-            }
+                if (empty($maatooSyncProductRow['maatoo_id'])) {
+                    continue;
+                }
 
-            if (empty($sync->getData('status')) || $sync->getData('status') == SyncInterface::STATUS_EMPTY) {
-                $orderLines[] = [
+                $maatooSyncOrderRow = $this->syncRepository->getRow([
+                    'entity_id' => $item->getData('quote_id'),
+                    'entity_type' => SyncInterface::TYPE_ORDER,
+                    'store_id' => $store->getId()
+                ]);
+
+                if (empty($maatooSyncOrderRow['maatoo_id'])) {
+                    continue;
+                }
+
+                $parameters = [
                     'store' => $this->storeMap->getStoreToMaatoo($item->getStoreId()),
                     "product" => $maatooSyncProductRow['maatoo_id'],
                     "order" => $maatooSyncOrderRow['maatoo_id'],
                     "quantity" => $item->getData('qty')
                 ];
 
-                $maatoSyncInsertData[] = [
-                    'status' => SyncInterface::STATUS_SYNCHRONIZED,
-                    'maatoo_id' => '',
-                    "entity_id" => $item->getId(),
-                    "store_id" => $item->getData('store_id'),
-                    "entity_type" => SyncInterface::TYPE_ORDER_LINES,
-                ];
+                if (count($orderLines) == 99) {
+                    break;
+                }
 
-                $updatedOrderItems[] = $item->getItemId();
-            }
+                if (empty($sync->getData('status')) || $sync->getData('status') == SyncInterface::STATUS_EMPTY) {
+                    $orderLines[] = [
+                        'store' => $this->storeMap->getStoreToMaatoo($item->getStoreId()),
+                        "product" => $maatooSyncProductRow['maatoo_id'],
+                        "order" => $maatooSyncOrderRow['maatoo_id'],
+                        "quantity" => $item->getData('qty')
+                    ];
+
+                    $maatoSyncInsertData[] = [
+                        'status' => SyncInterface::STATUS_SYNCHRONIZED,
+                        'maatoo_id' => '',
+                        "entity_id" => $item->getId(),
+                        "store_id" => $item->getData('store_id'),
+                        "entity_type" => SyncInterface::TYPE_ORDER_LINES,
+                    ];
+
+                    $updatedOrderItems[] = $item->getItemId();
+                }
 
 
-            $result = [];
+                $result = [];
 
-            if ($sync->getData('status') == SyncInterface::STATUS_UPDATED) {
-                $result = $this->adapter->makeRequest(
-                    'orderLines/'.$sync->getData('maatoo_id').'/edit',
-                    $parameters,
-                    'PATCH'
-                );
-                if (is_callable($cl)) {
-                    $cl('Updated item in order #' . $item->getItemId());
+                if ($sync->getData('status') == SyncInterface::STATUS_UPDATED) {
+                    $result = $this->adapter->makeRequest(
+                        'orderLines/' . $sync->getData('maatoo_id') . '/edit',
+                        $parameters,
+                        'PATCH'
+                    );
+                    if (is_callable($cl)) {
+                        $cl('Updated item in order #' . $item->getItemId());
+                    }
+                }
+
+                if (isset($result['orderLine']['id'])) {
+                    /*$param = [
+                        'entity_id' => $item->getId(),
+                        'entity_type' => SyncInterface::TYPE_ORDER_LINES,
+                        'store_id' => $store->getId()
+                    ];*/
+                    // @var \Maatoo\Maatoo\Model\Sync $sync
+                    //$sync = $this->syncRepository->getByParam($param);
+                    $sync->setStatus(SyncInterface::STATUS_SYNCHRONIZED);
+                    $sync->setMaatooId($result['orderLine']['id']);
+                    $sync->setEntityId($item->getId());
+                    $sync->setStoreId($item->getData('store_id'));
+                    $sync->setEntityType(SyncInterface::TYPE_ORDER_LINES);
+                    $this->syncRepository->save($sync);
                 }
             }
 
-            if (isset($result['orderLine']['id'])) {
-                /*$param = [
-                    'entity_id' => $item->getId(),
-                    'entity_type' => SyncInterface::TYPE_ORDER_LINES,
-                    'store_id' => $item->getStoreId(),
-                ];*/
-                // @var \Maatoo\Maatoo\Model\Sync $sync
-                //$sync = $this->syncRepository->getByParam($param);
-                $sync->setStatus(SyncInterface::STATUS_SYNCHRONIZED);
-                $sync->setMaatooId($result['orderLine']['id']);
-                $sync->setEntityId($item->getId());
-                $sync->setStoreId($item->getData('store_id'));
-                $sync->setEntityType(SyncInterface::TYPE_ORDER_LINES);
-                $this->syncRepository->save($sync);
-            }
-        }
-
-        if (!empty($orderLines) && !empty($maatoSyncInsertData)) {
-            $result = $this->adapter->makeRequest('orderLines/batch/new', $orderLines, 'POST');
-            $maatoSyncInsertData = $this->helper->setMaatooIdToInsertArray($maatoSyncInsertData, $result['orderLines']);
-            if (is_callable($cl)) {
-                $cl(
-                    'Added items to orders from # '.reset($updatedOrderItems).
-                    ' to #'.end($updatedOrderItems)
-                );
-            }
-
-            $this->helper->executeInsertOnDuplicate($maatoSyncInsertData);
-        }
-
-        // Delete entity
-        foreach ($this->storeManager->getStores() as $store) {
-            $this->searchCriteriaBuilder->addFilter('entity_type', SyncInterface::TYPE_ORDER_LINES);
-            $this->searchCriteriaBuilder->addFilter('status', SyncInterface::STATUS_DELETED);
-            $this->searchCriteriaBuilder->addFilter('store_id', $store->getId());
-            $searchCriteria = $this->searchCriteriaBuilder->create();
-            $collectionForDelete = $this->syncRepository->getList($searchCriteria);
-            foreach ($collectionForDelete as $itemDel) {
-                $result = $this->adapter->makeRequest('orderLines/' . $itemDel->getMaatooId() . '/delete', [], 'DELETE');
+            if (!empty($orderLines) && !empty($maatoSyncInsertData)) {
+                $result = $this->adapter->makeRequest('orderLines/batch/new', $orderLines, 'POST');
+                $maatoSyncInsertData = $this->helper->setMaatooIdToInsertArray($maatoSyncInsertData, $result['orderLines']);
                 if (is_callable($cl)) {
-                    $cl('Deleted item from order #' . $itemDel->getMaatooId());
+                    $cl(
+                        'Added items to orders from # ' . reset($updatedOrderItems) .
+                        ' to #' . end($updatedOrderItems)
+                    );
                 }
 
-                $this->syncRepository->delete($itemDel);
+                $this->helper->executeInsertOnDuplicate($maatoSyncInsertData);
+            }
+
+            // Delete entity
+            foreach ($this->storeManager->getStores() as $store) {
+                $this->searchCriteriaBuilder->addFilter('entity_type', SyncInterface::TYPE_ORDER_LINES);
+                $this->searchCriteriaBuilder->addFilter('status', SyncInterface::STATUS_DELETED);
+                $this->searchCriteriaBuilder->addFilter('store_id', $store->getId());
+                $searchCriteria = $this->searchCriteriaBuilder->create();
+                $collectionForDelete = $this->syncRepository->getList($searchCriteria);
+                foreach ($collectionForDelete as $itemDel) {
+                    $result = $this->adapter->makeRequest('orderLines/' . $itemDel->getMaatooId() . '/delete', [], 'DELETE');
+                    if (is_callable($cl)) {
+                        $cl('Deleted item from order #' . $itemDel->getMaatooId());
+                    }
+
+                    $this->syncRepository->delete($itemDel);
+                }
             }
         }
     }
