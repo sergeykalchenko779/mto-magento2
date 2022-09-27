@@ -10,7 +10,7 @@
                 <password></password>
             </general>
             <order>
-                <lifetime>10</lifetime>
+                <lifetime>365</lifetime>
             </order>
             <website>
                 <website_active>0</website_active>
