@@ -58,7 +58,7 @@
                     <label>Enable birthday field in checkout</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="allowed_store" translate="label" type="select" sortOrder="20" showInDefault="0" showInWebsite="1" showInStore="0">
+                <field id="allowed_store" translate="label" type="multiselect" sortOrder="20" showInDefault="0" showInWebsite="1" showInStore="0">
                     <label>Allowe Store</label>
                     <source_model>Maatoo\Maatoo\Model\Source\Store</source_model>
                     <can_be_empty>0</can_be_empty>

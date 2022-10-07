@@ -52,9 +52,9 @@ class StoreConfigManager
         $stores = [];
         foreach ($this->storeManager->getStores(false) as $store) {
             if ($this->config->isWebsiteAllowed($store->getWebsiteId())) {
-                $storeAllowed = $this->config->isStoreAllowed($store->getWebsiteId());
-                if ($storeAllowed) {
-                    $storesAllowed = explode(',', $storeAllowed);
+                $storesAllowed = $this->config->getAllowedStores();
+                if ($storesAllowed) {
+                    $storesAllowed = explode(',', $storesAllowed);
                     if (in_array($store->getId(), $storesAllowed)) {
                         $stores[] = $store;
                     }

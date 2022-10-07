@@ -222,5 +222,16 @@ class Config
         return $this->scopeConfig->getValue(self::MAATOO_NEWSLETTER_CONFIRMATION_EMAIL, $this->scopeStore);
     }
 
+    /**
+     * @return mixed
+     */
+    public function getAllowedStores()
+    {
+        return $this->scopeConfig->getValue(
+            \Maatoo\Maatoo\Model\Config\Config::MAATOO_ALLOWED_STORE,
+            \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITES
+        );
+    }
+
 
 }
