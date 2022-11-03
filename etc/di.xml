@@ -84,7 +84,11 @@
                 type="Maatoo\Maatoo\Plugin\Model\GuestSavePaymentPlugin" sortOrder="10"/>
     </type>
     <type name="Magento\Newsletter\Model\Subscriber">
-        <plugin name="manage_maatoo_newsletter_subscribers" type="Maatoo\Maatoo\Plugin\Model\NewsletterSubscriberPlugin" />
+        <plugin name="manage_maatoo_newsletter_subscribers" type="Maatoo\Maatoo\Plugin\Model\NewsletterSubscriberPlugin" sortOrder="1" disabled="false" />
+    </type>
+
+    <type name="Magento\Newsletter\Model\SubscriptionManager">
+        <plugin name="manage_maatoo_newsletter_subscribers_manager" type="Maatoo\Maatoo\Plugin\Model\NewsletterSubscriptionManagerPlugin" sortOrder="1" disabled="false" />
     </type>
 
     <type name="Magento\Checkout\Model\ShippingInformationManagement">

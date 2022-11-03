@@ -9,11 +9,11 @@ use Magento\Framework\Stdlib\CookieManagerInterface;
 use Magento\Newsletter\Controller\Subscriber\NewAction;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Newsletter\Model\Subscriber;
+use Magento\Newsletter\Model\SubscriptionManager;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
 
-class NewsletterSubscriberPlugin
+class NewsletterSubscriptionManagerPlugin
 {
     /**
      * @var ScopeConfigInterface
@@ -66,28 +66,15 @@ class NewsletterSubscriberPlugin
 
     }
 
-    /**
-     * @param Magento\Newsletter\Model\Subscriber $action
-     * @param $result
-     *
-     * @return mixed
-     */
-    public function beforeSendConfirmationSuccessEmail(Subscriber $subject)
-    {
-        if ($this->config->isNewsletterConfirmationEmailDisabled()) {
-            $subject->setImportMode(true);
-        }
-    }
 
     /**
-     * @param NewAction $action
+     * @param Magento\Newsletter\Model\SubscriptionManager $action
      * @param $result
      *
      * @return mixed
      */
-    public function afterSubscribe(Subscriber $subscriber, $result, $email)
+    public function afterSubscribe(SubscriptionManager $subscriber, $result, $email, $storeId)
     {
-        $storeId = $subscriber->getStoreId();
         $store = $this->storeManager->getStore($storeId);
 
         $leadId = $this->cookieManager->getCookie('mtc_id');
