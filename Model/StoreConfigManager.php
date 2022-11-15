@@ -84,4 +84,8 @@ class StoreConfigManager
         return $this->getStoreShortName($store) . '-pending';
     }
 
+    public function getStoreById($storeId) {
+        return $this->storeManager->getStore($storeId);
+    }
+
 }

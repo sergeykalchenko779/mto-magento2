@@ -10,6 +10,8 @@ use Maatoo\Maatoo\Api\Data\SyncInterface;
  */
 class Product
 {
+    const DOWNLOADABLE = 'downloadable';
+
     /**
      * @var \Magento\Catalog\Api\ProductRepositoryInterface
      */
@@ -58,6 +60,11 @@ class Product
     private $configurableProductType;
 
     /**
+     * @var \Magento\CatalogInventory\Api\StockRegistryInterface
+     */
+    protected $stockRegistry;
+
+    /**
      * Product constructor.
      * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
      * @param \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $collectionFactory
@@ -71,6 +78,7 @@ class Product
      * @param \Maatoo\Maatoo\Model\SyncRepository $syncRepository
      * @param Category $syncCategory
      * @param \Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable $configurableProductType
+     * @param \Magento\CatalogInventory\Api\StockRegistryInterface $stockRegistry
      */
     public function __construct(
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
@@ -84,7 +92,8 @@ class Product
         \Maatoo\Maatoo\Model\StoreMap $storeMap,
         \Maatoo\Maatoo\Model\SyncRepository $syncRepository,
         \Maatoo\Maatoo\Model\Synchronization\Category $syncCategory,
-        \Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable $configurableProductType
+        \Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable $configurableProductType,
+        \Magento\CatalogInventory\Api\StockRegistryInterface $stockRegistry
 
     )
     {
@@ -100,6 +109,7 @@ class Product
         $this->categoryCollectionFactory = $categoryCollectionFactory;
         $this->syncCategory = $syncCategory;
         $this->configurableProductType = $configurableProductType;
+        $this->stockRegistry = $stockRegistry;
     }
 
     /**
@@ -119,12 +129,12 @@ class Product
         }
 
         foreach ($this->storeManager->getStores() as $store) {
-            $attributes = ['sku', 'product_url', 'name', 'store_id', 'image', 'price', 'visibility', 'description'];
             $collection = $this->collectionFactory->create();
-            $collection->addAttributeToSelect($attributes)
-                ->addStoreFilter($store);
+            $collection->addStoreFilter($store);
 
-            foreach ($collection as $product) {
+            /** @var \Magento\Catalog\Model\Product $product */
+            foreach ($collection as $item) {
+                $product = $this->productRepository->getById($item->getId(), false, $store->getId());
 
                 /** @var \Maatoo\Maatoo\Model\Sync $sync */
                 $sync = $this->syncRepository->getByParam([
@@ -136,6 +146,20 @@ class Product
                 if ($sync->getData('status') == SyncInterface::STATUS_SYNCHRONIZED) {
                     continue;
                 }
+
+                // Get children products
+                $productChildren = [];
+                if($product->getTypeId() === \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE) {
+                    $childProducts = $product->getTypeInstance()->getChildrenIds($product->getId());
+                    if (count($childProducts[0])) {
+                        foreach ($childProducts[0] as $childId) {
+                            $productChildren[] = $this->productRepository->getById($childId, false, $store->getId());
+                        }
+                    }
+                }
+
+                // Get parent product
+                $parent = $this->getParent($product->getId(), $store->getId());
 
 
                 $price = $this->productHelper->getPrice($product);
@@ -173,14 +197,88 @@ class Product
                     'store' => $this->storeMap->getStoreToMaatoo($store->getId()),
                     "category" => $categoryIds[0],
                     "externalProductId" => $product->getId(),
-                    "price" => number_format($price, 2, '.', ''),
-                    "url" => mb_substr($this->productHelper->getProductUrl($product), 0, 190),
-                    "title" => mb_substr($product->getName(), 0, 190),
-                    "description" => $product->getDescription() ?? '-',
+                    "title" => $product->getName(),
+                    "description" => $product->getDescription(),
                     "sku" => $product->getSku(),
-                    "imageUrl" => $this->productHelper->getImageUrl($product),
-                    "productCategory" => $maatooCategoryId
+                    "productCategory" => $maatooCategoryId,
+                    "externalDatePublished" => $product->getCreatedAt()
                 ];
+
+                // Price
+                foreach ($productChildren as $variant) {
+                    if ($variant && $variant->getId() != $product->getId()) {
+                        //$variantPrice = $this->_getProductPrice($variant);
+                        $variantPrice = $this->productHelper->getPrice($variant);
+                        if ($price) {
+                            if ($variantPrice < $price) {
+                                $price = $variantPrice;
+                            }
+                        } else {
+                            $price = $variantPrice;
+                        }
+                    }
+                }
+                $parameters["price"] = number_format($price, 2, '.', '');
+
+                // Image
+                if ($product->getImage() && $product->getImage()!='no_selection') {
+                    $filePath = 'catalog/product/'.ltrim($product->getImage(), '/');
+                    $parameters["imageUrl"] = $this->getBaseUrl(
+                            $store->getId(),
+                            \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+                        ).$filePath;
+                } else {
+                    if ($parent && $parent->getImage() && $parent->getImage()!='no_selection') {
+                        $filePath = 'catalog/product/'.ltrim($parent->getImage(), '/');
+                        $parameters["imageUrl"] = $this->getBaseUrl(
+                                $store->getId(),
+                                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+                            ).$filePath;
+                    }
+                }
+
+                // Url
+                $parameters["url"] = $product->getProductUrl();
+                if ($parent) {
+                    $tailUrl = '';
+                    $options = $parent->getTypeInstance()->getConfigurableAttributesAsArray($parent);
+                    foreach ($options as $option) {
+                        if (strlen($tailUrl)) {
+                            $tailUrl .= '&';
+                        } else {
+                            $tailUrl .= '?';
+                        }
+                        $tailUrl .= $option['attribute_code'] . "=" . $product->getData($option['attribute_code']);
+                    }
+                    $parameters["url"] = $parent->getProductUrl() . $tailUrl;
+                }
+
+                // Visibility
+                $parameters["isVisible"] = true;
+                if ($product->getVisibility() == \Magento\Catalog\Model\Product\Visibility::VISIBILITY_NOT_VISIBLE) {
+                    $parameters["isVisible"] = false;
+                }
+
+                // Stock
+                $stock = $this->stockRegistry->getStockItem($product->getId(), $store->getId());
+                $parameters["inventory_quantity"] = (int)$stock->getQty();
+                $parameters["backorders"] = $stock->getBackorders();
+
+                // Handle children of configurable products
+                if($parent) {
+                    $maatooSyncParentProductRow = $this->syncRepository->getRow([
+                        'entity_id' => $parent->getId(),
+                        'entity_type' => SyncInterface::TYPE_PRODUCT,
+                        'store_id' => $store->getId()
+                    ]);
+
+                    if (empty($maatooSyncParentProductRow['maatoo_id'])) {
+                        continue;
+                    }
+
+                    // Get maatoo id of parent product
+                    $parameters["productParent"] = (int)$maatooSyncParentProductRow['maatoo_id'];
+                }
 
                 $result = [];
 
@@ -230,4 +328,24 @@ class Product
         }
     }
 
+    protected function getBaseUrl($storeId, $type)
+    {
+        return $this->storeManager->getStoreById($storeId)->getBaseUrl($type, true);
+    }
+
+    protected function getParent($productId, $storeId)
+    {
+        //$parentIds =$this->_configurable->getParentIdsByChild($productId);
+        $parentIds = $this->configurableProductType->getParentIdsByChild($productId);
+        $parent = null;
+        foreach ($parentIds as $id) {
+            $parent = $this->productRepository->getById($id, false, $storeId);
+            if ($parent->getTypeId() == \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE) {
+                break;
+            } else {
+                $parent = null;
+            }
+        }
+        return $parent;
+    }
 }
