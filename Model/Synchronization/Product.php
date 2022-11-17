@@ -261,7 +261,7 @@ class Product
 
                 // Stock
                 $stock = $this->stockRegistry->getStockItem($product->getId(), $store->getId());
-                $parameters["inventory_quantity"] = (int)$stock->getQty();
+                $parameters["inventoryQuantity"] = (int)$stock->getQty();
                 $parameters["backorders"] = $stock->getBackorders();
 
                 // Handle children of configurable products
