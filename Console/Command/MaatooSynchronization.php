@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Maatoo\Maatoo\Console\Command;
 
 use Exception;
+use Maatoo\Maatoo\Model\Synchronization\OrderAll;
+use Maatoo\Maatoo\Model\Synchronization\OrderLinesAll;
 use Magento\Framework\Console\Cli;
 use Magento\Framework\App\State;
 use Magento\Framework\App\Area;
@@ -36,10 +38,22 @@ class MaatooSynchronization extends Command
      * @var Order
      */
     private $order;
+
+    /**
+     * @var OrderAll
+     */
+    private $orderAll;
+
     /**
      * @var OrderLines
      */
     private $orderLines;
+
+    /**
+     * @var OrderLinesAll
+     */
+    private $orderLinesAll;
+
     /**
      * @var State
      */
@@ -50,7 +64,9 @@ class MaatooSynchronization extends Command
         Category $category,
         Product $product,
         Order $order,
+        OrderAll $orderAll,
         OrderLines $orderLines,
+        OrderLinesAll $orderLinesAll,
         State $state,
         string $name = null
     )
@@ -60,7 +76,9 @@ class MaatooSynchronization extends Command
         $this->category = $category;
         $this->product = $product;
         $this->order = $order;
+        $this->orderAll = $orderAll;
         $this->orderLines = $orderLines;
+        $this->orderLinesAll = $orderLinesAll;
         $this->state = $state;
     }
 
@@ -127,6 +145,25 @@ class MaatooSynchronization extends Command
             }
         );
         $output->writeln('<info>Maatoo synchronization order lines finished.</info>');
+        sleep(10);
+        $output->writeln('<info>Maatoo synchronization orders started.</info>');
+        $this->orderAll->sync(
+            function($message) use($output) {
+                $output->writeln('<info>' . $message . '</info>');
+            }
+        );
+        $output->writeln(PHP_EOL);
+        $output->writeln('<info>Maatoo synchronization orders finished.</info>');
+        sleep(10);
+        $output->writeln(PHP_EOL);
+        $output->writeln('<info>Maatoo synchronization all order lines started.</info>');
+        $this->orderLinesAll->sync(
+            function($message) use($output) {
+                $output->writeln('<info>' . $message . '</info>');
+            }
+        );
+        $output->writeln(PHP_EOL);
+        $output->writeln('<info>Maatoo synchronization all order lines finished.</info>');
 
         return Cli::RETURN_SUCCESS;
     }
