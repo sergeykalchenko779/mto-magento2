@@ -13,7 +13,8 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=7.4.0",
-        "magento/framework": "~102||~103"
+        "magento/framework": "~102||~103",
+        "symfony/lock": "*"
     },
     "autoload": {
         "files": [

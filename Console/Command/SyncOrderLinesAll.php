@@ -7,6 +7,7 @@ use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
 use Magento\Framework\Console\Cli;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,6 +15,8 @@ use Maatoo\Maatoo\Model\Synchronization\OrderLinesAll;
 
 class SyncOrderLinesAll extends Command
 {
+    use LockableTrait;
+
     /**
      * @var OrderLinesAll
      */
@@ -46,6 +49,12 @@ class SyncOrderLinesAll extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if (!$this->lock()) {
+            $output->writeln('The command is already running in another process.');
+
+            return Cli::RETURN_SUCCESS;
+        }
+
         $this->state->emulateAreaCode(
             Area::AREA_ADMINHTML,
             [$this, 'generate'],
