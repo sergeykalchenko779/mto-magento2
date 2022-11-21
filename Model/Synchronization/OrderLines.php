@@ -149,7 +149,8 @@ class OrderLines
                         "main_table.product_id = additional_table.entity_id AND additional_table.attribute_id = %s AND additional_table.value <> %s",
                         $attributeId,
                         \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED
-                    )
+                    ),
+                    []
                 );
             }
 
