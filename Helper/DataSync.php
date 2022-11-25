@@ -17,7 +17,7 @@ class DataSync extends AbstractHelper
     /**
      * @var ResourceConnection
      */
-    private ResourceConnection $resource;
+    private $resource;
 
     /**
      * @param  ResourceConnection  $resource
