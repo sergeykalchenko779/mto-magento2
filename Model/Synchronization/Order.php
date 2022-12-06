@@ -247,11 +247,13 @@ class Order
 
             $parameters = [
                 'store' => $this->storeMap->getStoreToMaatoo($order->getStoreId()),
-                'externalOrderId' => $order->getId(),
+                'externalOrderId' => $order->getIncrementId(),
                 'externalDateProcessed' => $order->getCreatedAt(),
                 'externalDateUpdated' => $order->getUpdatedAt(),
-                'externalDateCancelled' => $order->getUpdatedAt(),
                 'value' => (float)$order->getGrandTotal(),
+                'discountValue' => (float)$order->getDiscountAmount(),
+                'taxValue' => (float)$order->getTaxAmount(),
+                'shippingValue' => (float)$order->getShippingAmount(),
                 'url' => $this->urlBilder->getUrl('sales/order/view', ['id' => $order->getId()]),
                 'status' => OrderStatusMap::getStatus($order->getStatus()),
                 'paymentMethod' => $order->getPayment()->getMethod(),
@@ -262,6 +264,24 @@ class Order
                 'conversion' => [],
                 'birthday' => $birthdayDate ?? ''
             ];
+
+            if ($order->getState() == \Magento\Sales\Model\Order::STATE_CANCELED) {
+                $orderCancelDate = null;
+                $commentCollection = $order->getStatusHistoryCollection();
+                /**
+                 * @var $comment \Magento\Sales\Model\Order\Status\History
+                 */
+                foreach ($commentCollection as $comment) {
+                    if ($comment->getStatus() === \Magento\Sales\Model\Order::STATE_CANCELED) {
+                        $orderCancelDate = $comment->getCreatedAt();
+                    }
+                }
+
+                if ($orderCancelDate) {
+                    $parameters['externalDateCancelled'] = $orderCancelDate;
+                }
+            }
+
         } else {
             $updateTime = strtotime($quote->getUpdatedAt());
             if ($updateTime > (date('U') - 1800)) {
@@ -275,7 +295,6 @@ class Order
                 'externalOrderId' => 'draft' . $quote->getId(),
                 'externalDateProcessed' => $quote->getCreatedAt(),
                 'externalDateUpdated' => $quote->getUpdatedAt(),
-                'externalDateCancelled' => $quote->getUpdatedAt(),
                 'value' => (float)$quote->getGrandTotal(),
                 'url' => $this->urlBilder->getUrl('checkout/cart'),
                 'status' => OrderStatusMap::DRAFT,
