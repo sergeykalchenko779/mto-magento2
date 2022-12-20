@@ -125,6 +125,7 @@ class Order
      */
     public function sync(\Closure $cl = null)
     {
+        $this->logger->info("Begin syncing orders to maatoo.");
         /** @var \Magento\Store\Api\Data\StoreInterface $store */
         foreach ($this->storeManager->getStores() as $store) {
 
@@ -172,18 +173,21 @@ class Order
 
                 if (empty($sync->getData('status')) || $sync->getData('status') == SyncInterface::STATUS_EMPTY) {
                     $result = $this->adapter->makeRequest('orders/new', $parameters, 'POST');
+                    $this->logger->info('Added order #' . $quote->getId() . ' to maatoo');
                     if (is_callable($cl)) {
-                        $cl('Added order #' . $quote->getId());
+                        $cl('Added order #' . $quote->getId() . ' to maatoo');
                     }
                 } elseif ($sync->getData('status') == SyncInterface::STATUS_UPDATED) {
                     $result = $this->adapter->makeRequest('orders/' . $sync->getData('maatoo_id') . '/edit', $parameters, 'PATCH');
+                    $this->logger->info('Updated order #' . $quote->getId() . ' in maatoo');
                     if (is_callable($cl)) {
-                        $cl('Updated order #' . $quote->getId());
+                        $cl('Updated order #' . $quote->getId() . ' in maatoo');
                     }
                 } elseif ($sync->getData('status') == SyncInterface::STATUS_DELETED) {
                     $result = $this->adapter->makeRequest('orders/' . $sync->getData('maatoo_id') . '/delete', [], 'DELETE');
+                    $this->logger->info('Deleted order #' . $quote->getId() . ' from maatoo');
                     if (is_callable($cl)) {
-                        $cl('Deleted order #' . $quote->getId());
+                        $cl('Deleted order #' . $quote->getId() . ' from maatoo');
                     }
                 }
 
@@ -224,6 +228,7 @@ class Order
                 }
             }
         }
+        $this->logger->info("Finished syncing orders to maatoo.");
     }
 
     /**
