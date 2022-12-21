@@ -58,6 +58,7 @@ class Store
         $parameters = [];
         $storesMaatoo = $this->adapter->makeRequest('stores', $parameters, 'GET');
 
+        $this->logger->info("Found " . sizeof($this->storeManager->getStores()) ." enabled stores to be synced with maatoo.");
         foreach ($this->storeManager->getStores() as $store) {
             $addNew = true;
             $storesMaatooId = 0;
@@ -96,7 +97,7 @@ class Store
             $maatooStoreModel->setMaatooStoreId($result['store']['id']);
             $maatooStoreModel->setStoreId($store->getId());
             $this->maatooStoreRepository->save($maatooStoreModel);
-            $this->logger->info('Finished syncing stores to maatoo.');
         }
+        $this->logger->info('Finished syncing stores to maatoo.');
     }
 }

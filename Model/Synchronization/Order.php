@@ -136,6 +136,7 @@ class Order
                 new \Zend_Db_Expr('TIME_TO_SEC(TIMEDIFF(CURRENT_TIMESTAMP, `updated_at`)) <= ' . $lifetime * 24 * 60 * 60)
             );
 
+            $this->logger->info("Found ". sizeof($collection) ." orders to be processed for maatoo");
             /** @var \Magento\Quote\Model\Quote $quote */
             foreach ($collection as $quote) {
                 /** @var \Maatoo\Maatoo\Model\Sync $sync */
